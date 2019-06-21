@@ -1,4 +1,4 @@
-function [RBF] = Camada2(x, d, qNeuro, p, t, epocaMax, testeMax) %construtor, e inicializador 
+function [RBF] = Camada2(x, d, qNeuro, p, t, epocaMax, testeMax, f) %construtor, e inicializador 
      
      for k=1:testeMax
       clc
@@ -23,15 +23,16 @@ function [RBF] = Camada2(x, d, qNeuro, p, t, epocaMax, testeMax) %construtor, e 
         %foward
                 gTreino = saida(xTreino, qNeuro, w1, var);
                 gTreino = [-ones(size(gTreino,1),1) gTreino];
-                y = gTreino*w2/(qNeuro+1); %saida da rede rbf
+                y = Funcoes(f, gTreino*w2, 'f'); %saida da rede rbf
                 Erro = ErroQuadMed(dTreino, y); %calcula erro quadrado medio
                 pesoAnt = w2;
-                w2 = w2 +a*(w2-w0)+ (gTreino'*t*(dTreino - y)); %corrige os valores dos pesos da segunda camada
+                delta = (dTreino - y).*Funcoes(f, gTreino*w2, 'd');
+                w2 = w2 +a*(w2-w0)+(gTreino'*t*delta); %corrige os valores dos pesos da segunda camada
                 w0 = pesoAnt;
             %validação 
                 gVal = saida(xVal, qNeuro, w1, var); %foward da RBF
                 gVal = [-ones(size(gVal,1),1) gVal];
-                yVal = gVal*w2/(qNeuro+1); %somatorio das entradas
+                yVal = Funcoes(f, gVal*w2, 'f'); %somatorio das entradas
                 ErroVal = ErroQuadMed(dVal, yVal); %erro da validação
                 
                 if(ErroVal < ErroValMenor)
@@ -55,10 +56,11 @@ function [RBF] = Camada2(x, d, qNeuro, p, t, epocaMax, testeMax) %construtor, e 
         %acertos Teste
            gTeste = saida(xTeste, qNeuro, w1, var); %foward
            gTeste = [-ones(size(gTeste,1),1) gTeste];
-           yTeste = Sinal(gTeste*w2/(qNeuro+1)); %transforma a saida em 0 ou 1
+           yTeste = Funcoes(f, gTeste*w2, 'f');
+           yTeste = Sinal(yTeste); %transforma a saida em 0 ou 1
            yTeste = Definicao(yTeste); % classica de acordo com a quantidade respostas
            dTeste = Definicao(dTeste);
-           acertosT = find(~(dTeste-yTeste)); %encontra todos ou termos diferentes de 0
+           acertosT = find(~(dTeste-yTeste)); %encontra todos zeros, que no caso são os pontos de acertos
            acertosTeste(k) = sum(size(acertosT, 1))/size(dTeste,1); %acha a porcentagem de acertos da amostra
            
         %acertos Val

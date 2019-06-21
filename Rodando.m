@@ -1,47 +1,32 @@
 
 clear all
 clc
-rede = 'vinho'
+rede = 'Iris';
 qN = 5; %incremento de neuronios
-Nm = 5; %qtdd maxima de neuronios
+Nm = 50; %qtdd maxima de neuronios
 v = 1:(Nm/qN);
-Dados = load('DadosVinho.mat');
-Dados = Dados.x;
-x = Dados(:,1:13);
-d = Dados(:,14:end);
-
+Dados = load('Iris.txt');
+x = Dados(:,1:4);
+d = Dados(:,5:end);
+f = 'l';
 for i=1:size(v,2)  
-    rbf(i) = RBF(x, d, v(i)*qN);
+    rbf(i) = RBF(x, d, v(i)*qN, f);
 end
-save('ResultadoVinhoRBF.mat','rbf');
+ save('ResultadoIrisRBF_L.mat','rbf');
 
-% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % clear all
 % clc
-% rede = 'banco'
+% rede = 'Iris';
 % qN = 5; %incremento de neuronios
-% Nm = 100; %qtdd maxima de neuronios
-% v = 1:(Nm/qN);
-% Dados = load('bank_dados.txt');
-% x = Dados(:,1:(end-1));
-% d = Dados(:,end);
-% 
-% for i=1:size(v,2)  
-%     rbf(i) = RBF(x, d, v(i)*qN);
-% end
-% save('ResultadoBankRBF.mat','rbf');
-% 
-% clear all
-% clc
-% rede = 'Iris'
-% qN = 5; %incremento de neuronios
-% Nm = 100; %qtdd maxima de neuronios
+% Nm = 50; %qtdd maxima de neuronios
 % v = 1:(Nm/qN);
 % Dados = load('Iris.txt');
 % x = Dados(:,1:4);
 % d = Dados(:,5:end);
-% for i=1:size(v,2)  
-%     rbf(i) = RBF(x, d, v(i)*qN);
+% f = 't';
+% parfor i=1:size(v,2)  
+%     rbf(i) = RBF(x, d, v(i)*qN, f);
 % end
-%  save('ResultadoIrisRBF.mat','rbf');
-% 
+%  save('ResultadoIrisRBF_T.mat','rbf');
+
